@@ -1,1 +1,1 @@
-Dont get caught or u will be fucked.
+if files waveform is incorrect open final.vbs
