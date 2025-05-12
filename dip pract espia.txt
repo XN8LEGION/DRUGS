@@ -1,0 +1,377 @@
+pract1:- 
+% Red Blue and Green and Gray Components  
+i=imread('cancercell.jpg'); subplot(3,2,1); 
+imshow(i); title('Original Image');  
+%Red Component  
+r=i(:,:,1);  
+subplot(3,2,2); imshow(r);title('Red Component');  
+%Green Component  
+g=i(:,:,2);  
+subplot(3,2,3); imshow(g); title('Green Component');  
+%Blue Component  
+b=i(:,:,3);  
+subplot(3,2,4); imshow(b); title('Blue Component');  
+%Color to Gray Image 
+rg=rgb2gray(i);  
+subplot(3,2,5); imshow(rg); title('Gray Image');
+% Display color Image, find its complement and convert to gray scale 
+I=imread('cancercell.jpg');  
+subplot(2,2,1); imshow(I); imshow(I); title('Color Image');  
+c=imcomplement(I);  
+subplot(2,2,2); imshow(c); imshow(c); title('Complement of color Image');  
+r=rgb2gray(I);  
+subplot(2,2,3); imshow(r); imshow(r); title('Gray scale of color Image');  
+%Complement of Gray Image 
+b=imcomplement(r);  
+subplot(2,2,4); imshow(b); subimage(b); title('Complement of Gray Image');  
+%Simulation of an Image( Arithmetic & Logic Operation) 
+a=ones(40); b=zeros(40); c=[a b;b a]; d=[b b;a a];  
+A=10*(c+d);  
+M=c.*d;  
+S=c-d; 
+D=c/4; 
+figure; 
+subplot(3,2,1);  imshow(c); 
+subplot(3,2,2);  imshow(d); 
+subplot(3,2,3);  imshow(A); 
+subplot(3,2,4);  imshow(M); 
+subplot(3,2,5);  imshow(S); 
+subplot(3,2,6); imshow(D);  
+
+pract2:- 
+% To find Neighbour of a given Pixel  
+  
+a=magic(5); disp('a='); disp(a); 
+b=input('Enter the row < size of the Matrix'); 
+c=input(' Enter the Column < size of matrix'); 
+disp('Element'); disp(a(b,c));  
+  
+% 4 Point Neighbour  
+N4=[a(b+1,c), a(b-1,c), a(b,c+1), a(b,c-1)]; disp('N4='); 
+disp(N4);  
+  
+%8 Point Neighbour  
+N8=[a(b+1,c), a(b-1,c), a(b,c+1), a(b,c-1), a(b+1,c+1), a(b+1,c-1), a(b-1,c-1), a(b-1,c+1)]; disp('N8='); 
+disp(N8);  
+  
+%Diagonal Neighbour  
+ND=[ a(b+1,c+1), a(b+1,c-1), a(b-1,c-1), a(b-1,c+1)]; disp('ND='); 
+disp(ND); 
+
+pract3:-
+% Scaling (Resize) 
+I=imread('cancercell.jpg');  
+subplot(2,2,1); imshow(I); title('Original Image');  
+s=input('Enter Scaling Factor'); j=imresize(I,s);  
+subplot(2,2,2); imshow(j); title('Scaled Image');  
+% Rotation 
+K=imrotate(j,60);  
+subplot(2,2,3); imshow(K); title('Rotated Image 60deg');  
+R=imrotate(j,45);  
+subplot(2,2,4); imshow(R); title('Rotated Image 45deg');  
+%Display the color image I=imread('embryo.jpg');  
+figure, subplot(2,2,1); 
+imshow(I); 
+title('Original Image');  
+%Display Resized image by Bilinear method  
+B=imresize(I,5); subplot(2,2,2);  
+imshow(B);  
+title('Bilinear Image');   
+%Display Resized image by Nearest method  
+C=imresize(I,5,'nearest'); 
+subplot(2,2,3); 
+imshow(C); title('Nearest Image');  
+%Display Resized image by Bicubic method  
+D=imresize(I,5,'Bicubic'); 
+subplot(2,2,4); 
+imshow(D); title('Bicubic Image');  
+
+pract4:-
+ image = im2double(imread('cancercell.jpg'));
+ imshow(image);
+ title('Original Image');
+ f1 = fft(image);
+ f2 = fftshift(f1);
+ 
+ subplot(2,2,1);
+ imshow(abs(f1));
+ title('Frequency Spectrum');
+ 
+ subplot(2,2,2);
+ imshow(abs(f2));
+ title('Centered Spectrum');
+ 
+ f3 = log(1+abs(f2));
+ subplot(2,2,3);
+ imshow(f3);
+ title('log(1+abs(f2))');
+ 
+ image = fft2(f1);
+ image1 = real(image);
+ subplot(2,2,4);
+ imshow(image1);
+ title('2-D FFT');
+
+  Fs = 1000;
+ t = 0:1/Fs:20;
+ eeg_signal = sin(2*pi*10*t)+0.5*sin(2*pi*20*t)+0.2*sin(2*pi*5*t);
+ alpha_band = [8,12];
+ beta_band = [13,30];
+ theta_band = [4,7];
+ frame_length = Fs;
+ num_frames = floor(length(eeg_signal) / frame_length);
+ frames = reshape(eeg_signal(1:num_frames*frame_length),frame_length, num_frames);
+ alpha_power = zeros(1,num_frames);
+ beta_power = zeros(1,num_frames);
+ theta_power = zeros(1,num_frames);
+ for i = 1:num_frames
+    frame_fft = fft(frames(:,i));
+    power_spectrum = abs(frame_fft).^2;
+    freqs = (0:frame_length-1)*Fs / frame_length;
+    alpha_indices = find(freqs >= alpha_band(1) & freqs <=alpha_band(2));
+    beta_indices = find(freqs >= beta_band(1) & freqs <=beta_band(2));
+    theta_indices = find(freqs >= theta_band(1) & freqs <=theta_band(2));
+     alpha_power(i) = sum(power_spectrum(alpha_indices));
+    beta_power(i) = sum(power_spectrum(beta_indices));
+    theta_power(i) = sum(power_spectrum(theta_indices));
+ end
+
+  time = (1:num_frames) * (frame_length/Fs);
+ figure;
+ plot(time, alpha_power, 'r');
+ hold on;
+ plot(time, beta_power, 'b');
+ hold on;
+ plot(time, theta_power, 'g');
+ xlabel('Time (s)');
+ ylabel('Power');
+ title('Power in Alpha, Beta and Theta Bands');
+ legend('Alpha', 'Beta', 'Theta');
+ grid on;
+ eeg_data = readmatrix('Vaibhav Kanade_INSIGHT_170691_2022.11.14T16.03.36+05.30.md.mc.pm.fe.bp.csv');
+ Fs = 1000;
+ frame_length = Fs;
+ alpha_band = [8,12];
+ beta_band = [13,30];
+ theta_band = [4,7];
+ num_frames = floor(length(eeg_data) / frame_length);
+ frames = reshape(eeg_data(1:num_frames*frame_length),frame_length,num_frames);
+ alpha_power = zeros(1,num_frames);
+ beta_power = zeros(1,num_frames);
+ theta_power = zeros(1,num_frames);
+
+ for i = 1:num_frames
+    frame_fft = fft(frames(:,i));
+    power_spectrum = abs(frame_fft).^2;
+    freqs = (0:frame_length-1)*Fs / frame_length;
+    alpha_indices = find(freqs >= alpha_band(1) & freqs <=alpha_band(2));
+    beta_indices = find(freqs >= beta_band(1) & freqs <=beta_band(2));
+    theta_indices = find(freqs >= theta_band(1) & freqs <=theta_band(2));
+    alpha_power(i) = sum(power_spectrum(alpha_indices));
+    beta_power(i) = sum(power_spectrum(beta_indices));
+    theta_power(i) = sum(power_spectrum(theta_indices));
+ end
+ time = (1:num_frames) * (frame_length/Fs);
+ figure;
+ plot(time, alpha_power, 'r');
+ hold on;
+ plot(time, beta_power, 'b');
+ hold on;
+ plot(time, theta_power, 'g');
+ xlabel('Time (s)');
+ ylabel('Power');
+ title('Power in Alpha, Beta and Theta Bands');
+ legend('Alpha', 'Beta', 'Theta');
+ grid on;
+
+pract5:-
+i=imread('cancercell.jpg');  
+subplot(2,2,1); imshow(i);title('Original Image'); 
+g=rgb2gray(i);  
+
+subplot(2,2,2); imshow(g);title('Gray Image');  
+c=imcrop(g);  
+subplot(2,2,3); imshow(c);title('Cropped Image');  
+m=mean2(c);disp('m'); disp(m);  
+s=std2(c); disp('s'); disp(s);  
+figure,  
+k=(checkerboard>0.8);  
+subplot(2,1,1); imshow(k); title('Image1');  
+k1=(checkerboard>0.5);  
+subplot(2,1,2); imshow(k1); title('Image2');  
+r=corr2(k,k1);  
+disp('r');disp(r);  
+
+% Median Filters  
+I=imread('cancercell.jpg');  
+K = rgb2gray(I);  
+J= imnoise(K ,'salt & pepper',0.05);  
+f= medfilt2(J,[3,3]);  
+f1=medfilt2(J,[10,10]);  
+subplot(3,2,1); imshow(I); title('Original Image');  
+subplot(3,2,2); imshow(K); title('Gray Image');  
+subplot(3,2,3); imshow(J); title('Noise added Image');  
+subplot(3,2,4); imshow(f); title('3x3 Image');  
+subplot(3,2,5); imshow(f1); title('10x10 Image');  
+%Mean Filter and Average Filter  figure;  
+i=imread('cancercell.jpg');  g=rgb2gray(i);  
+g1=fspecial('average',[3 3]);  b1 = imfilter(g,g1);  
+subplot(2,2,1); imshow(i); title('Original Image');  
+subplot(2,2,2); imshow(g); title('Gray Image');  
+subplot(2,2,3); imshow(b1); title('3x3 Image');  
+g2= fspecial('average',[10 10]);  
+b2=imfilter(g,g2);  
+subplot(2,2,4); imshow(b2); title('10x10 Image');  
+%Implementation of filter using Convolution 
+figure;  
+I= imread('cancercell.jpg');  
+I=I(:,:,1); subplot(2,2,1); imshow(I); title('Original Image');  
+a=[0.001 0.001 0.001; 0.001 0.001 0.001; 0.001 0.001 0.001]; 
+R=conv2(a,I);  
+subplot(2,2,2); imshow(R); title('Filtered Image');  
+b=[0.005 0.005 0.005; 0.005 0.005 0.005; 0.005 0.005 0.005]; 
+R1=conv2(b,I);  
+subplot(2,2,3); imshow(R1); title('Filtered Image 2');
+
+pract6:-
+img = imread("Moon.jpg")
+imshow(img)
+title('Original Image')
+
+%Average Filter
+avg_filter = fspecial("average")
+average_image = imfilter(img,avg_filter)
+imshow(img)
+title('Original Image')
+imshow(average_image)
+title('Filtered Image (Average Filter)')
+
+%Laplacian Filter
+laplacian_filter = fspecial("laplacian")
+laplacian_image = imfilter(img, laplacian_filter)
+laplacian_processed_img = img - laplacian_image
+imshow(img)
+title('Original Image')
+imshow(laplacian_image)
+title('Filtered Image')
+imshow (laplacian_processed_img)
+title('Processed Image (Laplacian Filter)')
+
+%Gaussian Filter
+gaussian_filter = fspecial("gaussian")
+gaussian_image = imfilter(img,gaussian_filter)
+imshow(img)
+title('Original Image')
+imshow(gaussian_image)
+title('Filtered Image (Gaussian Filter)')
+
+
+%Motion Filter
+motion_filter = fspecial("motion")
+motion_image = imfilter(img,motion_filter)
+imshow(img)
+title('Original Image')
+imshow(motion_image)
+title('Filtered Image (Motion Filter)')
+1.  Enlist different types of spatial filters.
+1. Linear Filters:
+These filters operate by computing a weighted average of the pixels in the neighborhood of a target pixel. The weighting is determined by a filter kernel (mask).
+Mean (Averaging) Filter: Replaces each pixel with the average of its neighbors. It is used for noise reduction and blurring.
+Gaussian Filter: A smoothing filter that applies a weighted average with a Gaussian distribution, giving more weight to the center pixel and less weight to pixels farther away. It is used to reduce Gaussian noise and blur images while preserving edges better than the mean filter.
+Sobel Filter: Used for edge detection by computing the gradient of the image in the horizontal or vertical direction.
+Prewitt Filter: Similar to the Sobel filter, used for edge detection, but uses a different kernel for computing the gradient.
+Laplacian Filter: A second-order derivative filter that detects areas of rapid intensity change, commonly used for edge detection.
+High-pass Filter: Enhances high-frequency components (edges and fine details) and suppresses low-frequency components (smooth regions).
+2. Non-Linear Filters:
+These filters do not use a simple weighted sum of pixel values. They are effective in removing certain types of noise, particularly impulsive noise, without significantly affecting the edges.
+Median Filter: Replaces each pixel with the median of its neighboring pixels, making it highly effective at removing salt-and-pepper noise while preserving edges.
+Min and Max Filters: Replace each pixel with the minimum or maximum value of the pixels in its neighborhood. These are used for removing noise or enhancing small structures.
+3. Edge Detection Filters:
+These filters highlight the edges or boundaries in an image where there is a rapid intensity change.
+Sobel Filter: Computes the gradient in both horizontal and vertical directions to detect edges.
+Canny Edge Detector: A multi-step edge detection method that includes filtering with a Gaussian, finding intensity gradients, applying non-maximum suppression, and using double thresholds to detect edges.
+Laplacian of Gaussian (LoG): Combines Gaussian smoothing with the Laplacian operator, effective in detecting edges and fine details in an image.
+2.  Outline the steps involved in building an Image Filtering . 
+Define the objective of the filter.
+Select or design the filter kernel.
+Prepare the input image (convert to grayscale if needed).
+Apply the filter using convolution.
+Handle image borders (padding).
+Display original and filtered images for comparison.
+Evaluate the results and adjust if needed.
+Optional post-processing for normalization or further adjustments.
+
+pract7:-
+%Original Image
+checker_board_img = checkerboard(64);
+figure, imshow(checker_board_img), title('Checker Board Image')
+
+%Gaussian Noise
+gaussian_noise_img = imnoise(checker_board_img, 'gaussian', 0, 0.01);
+figure, imshow(gaussian_noise_img), title('Gaussian Noise');
+gaussian_filtered = imgaussfilt(gaussian_noise_img, 1);
+figure, imshow(gaussian_filtered), title('Gaussian Filtered');
+
+%Salt and Pepper Noise
+salt_pepper_noise_img = imnoise(checker_board_img, 'salt & pepper', 0.02);
+figure, imshow(salt_pepper_noise_img), title('Salt & Pepper Noise');
+salt_pepper_filtered = medfilt2(salt_pepper_noise_img, [3 3]);
+figure, imshow(salt_pepper_filtered), title('Median Filtered');
+
+%Speckle Noise
+speckle_noise_img = imnoise(checker_board_img, 'speckle', 0.04);
+figure, imshow(speckle_noise_img), title('Speckle Noise');
+speckle_filtered = wiener2(speckle_noise_img, [5 5]);
+figure, imshow(speckle_filtered), title('Wiener Filtered');
+1. Types of Noise
+1. Gaussian Noise
+Follows a normal (bell curve) distribution.
+Appears as random intensity variations across the image.
+Caused by sensor noise or poor lighting.
+Common in most digital images.
+2. Salt-and-Pepper Noise
+Appears as random black (pepper) and white (salt) pixels.
+Caused by transmission errors or faulty sensors.
+Best removed using a median filter.
+3. Poisson Noise (Photon Noise)
+Related to the quantum nature of light.
+Intensity-dependent: more noticeable in low-light images.
+Follows a Poisson distribution.
+4. Speckle Noise
+Appears as grainy spots, common in medical and radar images.
+Caused by interference or reflection artifacts.
+Multiplicative noise—proportional to pixel value.
+5. Quantization Noise
+Occurs during analog-to-digital conversion due to rounding errors.
+More visible in low bit-depth images.
+Causes banding in smooth areas.
+6. Chromatic Noise
+Random color distortions in images, often in dark areas.
+Seen in high-ISO photography.
+7. Thermal Noise
+Due to random electron movement in the sensor.
+Affects all pixels uniformly, especially in high temperatures.
+2. Outline the steps involved in building an Image filtering to remove noise in image
+Read the Image
+Load the noisy image using tools like imread in MATLAB or OpenCV in Python.
+img = imread('noisy_image.jpg');
+Convert to Grayscale (if needed)
+Noise removal is often applied on grayscale images for simplicity.
+gray_img = rgb2gray(img);
+Analyze the Type of Noise
+Observe the image or use histogram/statistical tools to determine the type:
+Salt-and-pepper → use median filter
+Gaussian → use mean/Gaussian filter
+Speckle → use adaptive filters
+Choose Appropriate Filter
+Median filter: good for salt-and-pepper noise
+Mean or Gaussian filter: for Gaussian noise
+Adaptive filters: for speckle or mixed noise
+Apply the Filter
+filtered_img = medfilt2(gray_img);
+h = fspecial('gaussian', [3 3], 1);
+filtered_img = imfilter(gray_img, h);
+Evaluate the Result
+imshowpair(gray_img, filtered_img, 'montage');
+(Optional) Post-Processing
+sharpened = imsharpen(filtered_img);
